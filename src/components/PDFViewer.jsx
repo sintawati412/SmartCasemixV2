@@ -1,164 +1,67 @@
-import { useState } from "react";
+import { FaTimes, FaDownload, FaExternalLinkAlt } from "react-icons/fa";
 
-import { Document, Page, pdfjs } from "react-pdf";
-
-import {
-  FaTimes,
-  FaSearchPlus,
-  FaSearchMinus,
-  FaChevronLeft,
-  FaChevronRight,
-} from "react-icons/fa";
-
-import "react-pdf/dist/Page/AnnotationLayer.css";
-import "react-pdf/dist/Page/TextLayer.css";
-
-pdfjs.GlobalWorkerOptions.workerSrc =
-`//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
-
-export default function PDFViewer({
-
-  file,
-
-  onClose,
-
-}) {
-
-  const [pages, setPages] = useState(0);
-
-  const [page, setPage] = useState(1);
-
-  const [zoom, setZoom] = useState(1.2);
-
-  function nextPage() {
-
-    if (page < pages) {
-
-      setPage(page + 1);
-
-    }
-
-  }
-
-  function prevPage() {
-
-    if (page > 1) {
-
-      setPage(page - 1);
-
-    }
-
-  }
-
-  function zoomIn() {
-
-    setZoom((z) => z + 0.2);
-
-  }
-
-  function zoomOut() {
-
-    if (zoom > 0.6) {
-
-      setZoom((z) => z - 0.2);
-
-    }
-
+export default function PDFViewer({ file, onClose }) {
+  function downloadPDF() {
+    const link = document.createElement("a");
+    link.href = file;
+    link.download = "";
+    link.click();
   }
 
   return (
+    <div className="pdfOverlay">
 
-<div className="pdfOverlay">
+      <div className="pdfModal">
 
-<div className="pdfModal">
+        <div className="pdfHeader">
 
-<div className="pdfHeader">
+          <h2>📄 Preview Dokumen</h2>
 
-<h2>
+          <div className="pdfToolbar">
 
-📄 Preview Dokumen
+            <button
+              onClick={() => window.open(file, "_blank")}
+              title="Buka Tab Baru"
+            >
+              <FaExternalLinkAlt />
+            </button>
 
-</h2>
+            <button
+              onClick={downloadPDF}
+              title="Download"
+            >
+              <FaDownload />
+            </button>
 
-<div className="pdfToolbar">
+            <button
+              className="closeBtn"
+              onClick={onClose}
+              title="Tutup"
+            >
+              <FaTimes />
+            </button>
 
-<button onClick={zoomOut}>
+          </div>
 
-<FaSearchMinus/>
+        </div>
 
-</button>
+        <div className="pdfBody">
 
-<button onClick={zoomIn}>
+          <iframe
+            src={file}
+            title="PDF Viewer"
+            width="100%"
+            height="100%"
+            style={{
+              border: "none",
+              borderRadius: "10px",
+            }}
+          />
 
-<FaSearchPlus/>
+        </div>
 
-</button>
+      </div>
 
-<button onClick={prevPage}>
-
-<FaChevronLeft/>
-
-</button>
-
-<span>
-
-{page} / {pages}
-
-</span>
-
-<button onClick={nextPage}>
-
-<FaChevronRight/>
-
-</button>
-
-<button
-className="closeBtn"
-onClick={onClose}
->
-
-<FaTimes/>
-
-</button>
-
-</div>
-
-</div>
-
-<div className="pdfBody">
-
-<Document
-
-file={file}
-
-onLoadSuccess={({ numPages }) => {
-
-setPages(numPages);
-
-setPage(1);
-
-}}
-
-loading={<h2>Loading PDF...</h2>}
-
->
-
-<Page
-
-pageNumber={page}
-
-scale={zoom}
-
-/>
-
-</Document>
-
-</div>
-
-</div>
-
-</div>
-
+    </div>
   );
-
 }
