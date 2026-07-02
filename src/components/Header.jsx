@@ -67,9 +67,9 @@ export default function Header() {
 
           <div>
 
-            <strong>Sonia</strong>
+            <strong>Sintawati</strong>
 
-            <small>Administrator</small>
+            <small>Administator</small>
 
           </div>
 
